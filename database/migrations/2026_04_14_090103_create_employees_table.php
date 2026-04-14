@@ -27,15 +27,12 @@ return new class extends Migration {
             $table->foreignUuid('department_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('position_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->foreignUuid('manager_id')->nullable()->constrained()->nullOnDelete();
-
             $table->timestamps();
             $table->softDeletes();
 
             // Index
             $table->index('department_id');
             $table->index('position_id');
-            $table->index('manager_id');
         });
     }
 

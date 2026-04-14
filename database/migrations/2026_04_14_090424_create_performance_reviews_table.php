@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
 
             $table->foreignUuid('employee_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('reviewer_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('reviewer_id')->constrained('users')->cascadeOnDelete();
 
             $table->string('period'); // e.g. 2026-Q1
             $table->integer('score');

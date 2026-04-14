@@ -25,9 +25,6 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
 
-            // FK
-            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
-
             // Index
             $table->index(['employee_id', 'date']);
         });
