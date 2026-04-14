@@ -9,37 +9,40 @@ use Illuminate\Support\Str;
 
 trait ApiResponse
 {
-    public function successResponse(mixed $data, mixed $message = null, int $status = 200, mixed $meta = null): JsonResponse
+    protected function success(mixed $data, mixed $message = null, int $status = 200, mixed $meta = null): JsonResponse
     {
         return response()->json([
             'ok' => true,
             'data' => $this->recursiveCamelCase($data),
-            'error' => null, // Konsisten memberikan null
+            'error' => null,
             'meta' => $meta ? $this->recursiveCamelCase($meta) : null,
-            'message' => $message, // Opsional jika ingin ditambahkan
+            'message' => $message,
         ], $status);
     }
 
-    public function errorResponse(string $errorCode, string $message, mixed $details = null, int $status = 400): JsonResponse
+    protected function error(string $errorCode, string $message, mixed $details = null, int $status = 400): JsonResponse
     {
         return response()->json([
             'ok' => false,
-            'data' => null, // Konsisten memberikan null
+            'data' => null,
             'error' => [
                 'code' => $errorCode,
                 'message' => $message,
                 'details' => $this->recursiveCamelCase($details),
             ],
-            'meta' => null, // Konsisten memberikan null
+            'meta' => null,
         ], $status);
     }
 
     public function paginatedResponse(LengthAwarePaginator $paginator, ?string $message = null): JsonResponse
     {
-        return $this->successResponse($paginator->items(), $message, 200, [
+        return $this->success($paginator->items(), $message, 200, [
             'total' => $paginator->total(),
-            'page' => $paginator->currentPage(),
+            'count' => $paginator->count(),
             'limit' => $paginator->perPage(),
+            'currentPage' => $paginator->currentPage(),
+            'totalPages' => $paginator->lastPage(),
+            'hasNext' => $paginator->hasMorePages(),
         ]);
     }
 
@@ -74,7 +77,7 @@ trait ApiResponse
 
     public function errorFromEnum(AppErrorInterface $error, mixed $details = null): JsonResponse
     {
-        return $this->errorResponse(
+        return $this->error(
             $error->code(),
             $error->message(),
             $details,
