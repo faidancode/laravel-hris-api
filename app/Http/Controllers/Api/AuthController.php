@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -18,14 +19,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        Log::info('Login attempt', ['email' => $request->email]);
         try {
             $data = $this->authService->login(
                 $request->email,
                 $request->password
             );
 
+            Log::debug('Login successful', ['email' => $request->email]);
             return response()->json($data);
         } catch (Exception $e) {
+            Log::debug('Login failed', ['email' => $request->email, 'error' => $e->getMessage()]);
             return response()->json([
                 'message' => $e->getMessage()
             ], 401);
