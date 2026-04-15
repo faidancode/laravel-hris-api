@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Exception;
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\DTOs\UserDto;
 
 class UserService
 {
@@ -33,11 +34,13 @@ class UserService
         return $user;
     }
 
-    public function create(array $data): User
+    public function create(UserDto $dto): User
     {
-        if ($this->repo->existsByEmail($data['email'])) {
+        if ($this->repo->existsByEmail($dto->email)) {
             throw new Exception("Email sudah digunakan.");
         }
+
+        $data = $dto->toArray();
 
         $user = $this->repo->create([
             ...$data,
@@ -51,8 +54,10 @@ class UserService
         return $user;
     }
 
-    public function update(string $id, array $data): User
+    public function update(string $id, UserDto $dto): User
     {
+        $data = $dto->toArray();
+
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }

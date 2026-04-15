@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTGuard;
+use App\DTOs\AuthDto;
 
 class AuthService
 {
@@ -24,11 +25,11 @@ class AuthService
     /**
      * Login
      */
-    public function login(string $email, string $password): array
+    public function login(AuthDto $dto): array
     {
-        $user = $this->authRepo->getByEmail($email);
+        $user = $this->authRepo->getByEmail($dto->email);
 
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (!$user || !Hash::check($dto->password, $user->password)) {
             throw new Exception("Kredensial salah.");
         }
 

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use Exception;
 
 class UserController extends Controller
@@ -42,21 +43,21 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try {
-            $user = $this->service->create($request->all());
+            $user = $this->service->create($request->toDto());
             return response()->json($user, 201);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, string $id)
     {
         try {
             return response()->json(
-                $this->service->update($id, $request->all())
+                $this->service->update($id, $request->toDto())
             );
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);

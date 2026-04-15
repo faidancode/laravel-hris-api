@@ -172,6 +172,7 @@ describe('PUT /api/v1/users/{id}', function () {
 
         $payload = [
             'name' => 'Updated Name',
+            'email' => $user->email,
             'role' => 'editor'
         ];
 
@@ -192,7 +193,11 @@ describe('PUT /api/v1/users/{id}', function () {
         $user = User::factory()->create();
         $oldPassword = $user->password;
 
-        $payload = ['password' => 'new-secure-password'];
+        $payload = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => 'new-secure-password'
+        ];
 
         $response = $this->putJson("/api/v1/users/{$user->id}", $payload);
 

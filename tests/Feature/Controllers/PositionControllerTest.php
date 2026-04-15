@@ -4,8 +4,19 @@ use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Tests\Traits\WithAuthUser;
 
-uses(RefreshDatabase::class);
+uses(RefreshDatabase::class, WithAuthUser::class);
+
+uses(MockeryPHPUnitIntegration::class)->beforeEach(function () {
+    $this->authUser = $this->createAuthUser([
+        'position.view',
+        'position.create',
+        'position.update',
+        'position.delete',
+    ]);
+});
 
 // ─────────────────────────────────────────────
 // GET /api/v1/positions

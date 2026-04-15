@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
+use App\Http\Requests\AuthRequest;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -17,13 +18,12 @@ class AuthController extends Controller
     ) {
     }
 
-    public function login(Request $request)
+    public function login(AuthRequest $request)
     {
         Log::info('Login attempt', ['email' => $request->email]);
         try {
             $data = $this->authService->login(
-                $request->email,
-                $request->password
+                $request->toDto()
             );
 
             Log::debug('Login successful', ['email' => $request->email]);
