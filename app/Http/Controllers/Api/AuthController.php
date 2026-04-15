@@ -4,35 +4,48 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\DTOs\AuthDto;
+use App\Enums\GlobalErrorCode;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\AuthRequest;
+use App\Http\Resources\AuthResource;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
     public function __construct(
         protected AuthService $authService
     ) {
     }
 
-    public function login(AuthRequest $request)
+    public function login(AuthRequest $request): JsonResponse
     {
-        Log::info('Login attempt', ['email' => $request->email]);
         try {
-            $data = $this->authService->login(
-                $request->toDto()
-            );
+            // Memanggil method toDto() yang ada di AuthRequest Anda
+            $result = $this->authService->login($request->toDto());
 
-            Log::debug('Login successful', ['email' => $request->email]);
-            return response()->json($data);
+            return $this->success(
+                new AuthResource($result),
+                'Login successful'
+            );
         } catch (Exception $e) {
-            Log::debug('Login failed', ['email' => $request->email, 'error' => $e->getMessage()]);
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 401);
+            Log::error('Login failed', [
+                'email' => $request->email,
+                'error' => $e->getMessage()
+            ]);
+
+            // Cek error spesifik (401 Unauthorized)
+            if ($e->getMessage() === "Kredensial salah." || $e->getMessage() === "User tidak aktif.") {
+                return $this->error('AUTH_ERROR', $e->getMessage(), null, 401);
+            }
+
+            return $this->errorFromEnum(GlobalErrorCode::INTERNAL_ERROR);
         }
     }
 
