@@ -11,6 +11,7 @@ class Department extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
+
     protected $keyType = 'string';
     public $incrementing = false;
 

@@ -36,7 +36,7 @@ trait ApiResponse
 
     public function paginatedResponse(LengthAwarePaginator $paginator, ?string $message = null): JsonResponse
     {
-        return $this->success($paginator->items(), $message, 200, [
+        return $this->success($paginator->getCollection(), $message, 200, [
             'total' => $paginator->total(),
             'count' => $paginator->count(),
             'limit' => $paginator->perPage(),

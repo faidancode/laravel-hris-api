@@ -42,12 +42,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/login",
+							"raw": "{{base_url}}/login",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
+								"auth",
 								"login"
 							]
 						}
@@ -70,12 +70,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/positions",
+							"raw": "{{base_url}}/positions",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"positions"
 							]
 						}
@@ -118,12 +117,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/positions",
+							"raw": "{{base_url}}/positions",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"positions"
 							]
 						}
@@ -141,12 +139,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/positions/{{position_id}}",
+							"raw": "{{base_url}}/positions/{{position_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"positions",
 								"{{position_id}}"
 							]
@@ -174,12 +171,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/positions/{{position_id}}",
+							"raw": "{{base_url}}/positions/{{position_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"positions",
 								"{{position_id}}"
 							]
@@ -198,12 +194,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/positions/{{position_id}}",
+							"raw": "{{base_url}}/positions/{{position_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"positions",
 								"{{position_id}}"
 							]
@@ -257,12 +252,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/users",
+							"raw": "{{base_url}}/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"users"
 							]
 						}
@@ -305,12 +299,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/users",
+							"raw": "{{base_url}}/users",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"users"
 							]
 						}
@@ -328,12 +321,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"raw": "{{base_url}}/users/{{user_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"users",
 								"{{user_id}}"
 							]
@@ -361,12 +353,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"raw": "{{base_url}}/users/{{user_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"users",
 								"{{user_id}}"
 							]
@@ -385,12 +376,11 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"raw": "{{base_url}}/users/{{user_id}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"api",
 								"users",
 								"{{user_id}}"
 							]
@@ -433,7 +423,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8000"
+			"value": "http://laravel-hris.test/api/v1"
 		},
 		{
 			"key": "access_token",
