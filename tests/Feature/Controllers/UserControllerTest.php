@@ -10,7 +10,7 @@ uses(RefreshDatabase::class, WithAuthUser::class);
 
 
 uses(MockeryPHPUnitIntegration::class)->beforeEach(function () {
-     $this->authUser = $this->createAuthUser([
+    $this->authUser = $this->createAuthUser([
         'user.view',
         'user.create',
         'user.update',
@@ -122,7 +122,7 @@ describe('POST /api/v1/users', function () {
         expect($user->hasRole('admin'))->toBeTrue();
     });
 
-    it('returns 400 if email is already taken', function () {
+    it('returns 422 if email is already taken', function () {
         User::factory()->create(['email' => 'existing@example.com']);
 
         $payload = [
@@ -133,8 +133,8 @@ describe('POST /api/v1/users', function () {
 
         $response = $this->postJson('/api/v1/users', $payload);
 
-        $response->assertStatus(400)
-            ->assertJson(['message' => 'Email sudah digunakan.']);
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
     });
 });
 
@@ -222,3 +222,59 @@ describe('DELETE /api/v1/users/{id}', function () {
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     });
 });
+
+
+// ─────────────────────────────────────────────
+// POST /api/v1/users/{id}/assign-role
+// ─────────────────────────────────────────────
+
+describe('POST /api/v1/users/{id}/assign-role', function () {
+
+    it('assigns role successfully', function () {
+        $user = User::factory()->create();
+
+        $response = $this->postJson("/api/v1/users/{$user->id}/assign-role", [
+            'role' => 'admin'
+        ]);
+
+        $response->assertStatus(200);
+    });
+
+    it('fails if user not found', function () {
+        $response = $this->postJson("/api/v1/users/invalid-id/assign-role", [
+            'role' => 'admin'
+        ]);
+
+        $response->assertStatus(400);
+    });
+});
+
+describe('GET /api/v1/users?role=admin', function () {
+
+    it('returns only admin users', function () {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $user = User::factory()->create();
+        $user->assignRole('employee');
+
+        $response = $this->getJson('/api/v1/users?role=admin');
+
+        $data = $response->json('data');
+
+        expect(count($data))->toBe(1);
+    });
+});
+
+describe('GET /api/v1/users?employee_id=null', function () {
+
+    it('returns users without employee', function () {
+        User::factory()->create(['employee_id' => null]);
+        User::factory()->create(['employee_id' => 'some-id']);
+
+        $response = $this->getJson('/api/v1/users?employee_id=null');
+
+        expect(count($response->json('data')))->toBe(1);
+    });
+});
+

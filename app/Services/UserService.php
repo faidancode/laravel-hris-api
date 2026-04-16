@@ -75,4 +75,17 @@ class UserService
     {
         $this->repo->delete($id);
     }
+
+    public function assignRole(string $userId, string $role): User
+    {
+        $user = $this->repo->findById($userId);
+
+        if (!$user) {
+            throw new Exception("User tidak ditemukan.");
+        }
+
+        $user->syncRoles([$role]);
+
+        return $user;
+    }
 }

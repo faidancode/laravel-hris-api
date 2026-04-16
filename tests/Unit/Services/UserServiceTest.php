@@ -172,7 +172,7 @@ describe('update()', function () {
 
     it('syncs roles if role key is present', function () {
         $id = 'uuid-123';
-        $dto = new UserDto(name: 'Test', email: 'test@example.com');
+        $dto = new UserDto(name: 'Test', email: 'test@example.com', role: 'admin');
         $user = Mockery::mock(User::class)->makePartial();
 
         $this->repositoryMock
@@ -216,4 +216,29 @@ describe('delete()', function () {
 
         // Assertions are handled by Mockery's shouldReceive once()
     });
+});
+
+// 
+// assignRole()
+// 
+
+describe('assignRole()', function () {
+
+    it('assigns role successfully', function () {
+        $user = Mockery::mock(User::class)->makePartial();
+
+        $this->repositoryMock->shouldReceive('findById')->andReturn($user);
+        $user->shouldReceive('syncRoles')->once();
+
+        $result = $this->service->assignRole('1', 'admin');
+
+        expect($result)->toBe($user);
+    });
+
+    it('throws error if user not found', function () {
+        $this->repositoryMock->shouldReceive('findById')->andReturn(null);
+
+        $this->service->assignRole('1', 'admin');
+
+    })->throws(Exception::class);
 });

@@ -73,4 +73,17 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
+
+    public function assignRole(Request $request, string $id)
+    {
+        try {
+            $user = $this->service->assignRole($id, $request->role);
+
+            return response()->json($user);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

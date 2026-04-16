@@ -18,6 +18,18 @@ class UserRepository implements UserRepositoryInterface
             $query->where('name', 'like', "%{$filters['search']}%");
         }
 
+        if (!empty($filters['role'])) {
+            $query->whereHas('roles', fn($q) => $q->where('name', $filters['role']));
+        }
+
+        if (array_key_exists('employee_id', $filters)) {
+            if ($filters['employee_id'] === 'null' || $filters['employee_id'] === null) {
+                $query->whereNull('employee_id');
+            } else {
+                $query->where('employee_id', $filters['employee_id']);
+            }
+        }
+
         $limit = $filters['limit'] ?? 10;
 
         return $query->paginate($limit);
