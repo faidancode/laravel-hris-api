@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\GlobalErrorCode;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePositionRequest;
-use App\Http\Requests\UpdatePositionRequest;
+use App\Http\Requests\PositionRequest;
 use App\Services\PositionService;
 use App\Traits\ApiResponse;
 use Exception;
@@ -41,7 +40,7 @@ class PositionController extends Controller
         }
     }
 
-    public function store(StorePositionRequest $request): JsonResponse
+    public function store(PositionRequest $request): JsonResponse
     {
         try {
             $position = $this->service->create($request->toDto());
@@ -69,7 +68,7 @@ class PositionController extends Controller
         }
     }
 
-    public function update(UpdatePositionRequest $request, string $id): JsonResponse
+    public function update(PositionRequest $request, string $id): JsonResponse
     {
         if (!Str::isUuid($id)) {
             return $this->errorFromEnum(GlobalErrorCode::INVALID_UUID, 'Invalid UUID format.');

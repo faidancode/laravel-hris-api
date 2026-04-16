@@ -15,24 +15,21 @@ class UserRequest extends FormRequest
 
     public function rules(): array
     {
-        // the user id is passed as a string parameter 'id' or 'user' to the route depending on the resource name
-        $userId = $this->route('id') ?? $this->route('user');
-        
-        $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+        $isUpdate = $this->isMethod('put') || $this->isMethod('patch');
+        // Ambil ID dari rute untuk pengecualian unique
+        $id = $this->route('id') ?? $this->route('user');
+
+        return [
+            'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'email' => [
+                $isUpdate ? 'sometimes' : 'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($id),
+            ],
+            'password' => [$isUpdate ? 'nullable' : 'required', 'string', 'min:8'],
             'role' => ['nullable', 'string'],
         ];
-
-        if ($userId) {
-            $rules['email'][] = Rule::unique('users', 'email')->ignore($userId);
-            $rules['password'] = ['nullable', 'string', 'min:8'];
-        } else {
-            $rules['email'][] = Rule::unique('users', 'email');
-            $rules['password'] = ['required', 'string', 'min:8'];
-        }
-
-        return $rules;
     }
 
     public function toDto(): UserDto
