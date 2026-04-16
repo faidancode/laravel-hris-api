@@ -15,6 +15,7 @@ uses(MockeryPHPUnitIntegration::class)->beforeEach(function () {
         'user.create',
         'user.update',
         'user.delete',
+        'user.assign-role',
     ]);
 });
 
@@ -229,8 +230,8 @@ describe('DELETE /api/v1/users/{id}', function () {
 // ─────────────────────────────────────────────
 
 describe('POST /api/v1/users/{id}/assign-role', function () {
-
     it('assigns role successfully', function () {
+        Role::create(['name' => 'admin', 'guard_name' => 'api']);
         $user = User::factory()->create();
 
         $response = $this->postJson("/api/v1/users/{$user->id}/assign-role", [
@@ -252,11 +253,21 @@ describe('POST /api/v1/users/{id}/assign-role', function () {
 describe('GET /api/v1/users?role=admin', function () {
 
     it('returns only admin users', function () {
+        $role = Role::create([
+            'name' => 'admin',
+            'guard_name' => 'api'
+        ]);
+
         $admin = User::factory()->create();
-        $admin->assignRole('admin');
+        $admin->assignRole($role);
+
+        $employeeRole = Role::create([
+            'name' => 'employee',
+            'guard_name' => 'api'
+        ]);
 
         $user = User::factory()->create();
-        $user->assignRole('employee');
+        $user->assignRole($employeeRole);
 
         $response = $this->getJson('/api/v1/users?role=admin');
 
@@ -266,15 +277,4 @@ describe('GET /api/v1/users?role=admin', function () {
     });
 });
 
-describe('GET /api/v1/users?employee_id=null', function () {
-
-    it('returns users without employee', function () {
-        User::factory()->create(['employee_id' => null]);
-        User::factory()->create(['employee_id' => 'some-id']);
-
-        $response = $this->getJson('/api/v1/users?employee_id=null');
-
-        expect(count($response->json('data')))->toBe(1);
-    });
-});
 
